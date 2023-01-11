@@ -9,24 +9,52 @@ on:
     branches: [ "POC_AppiumJS" ]
 
 jobs:
-  appium:
+  appium-test:
     runs-on: ubuntu-latest
 
     steps:
     - name: Checkout code
       uses: actions/checkout@v2
-    - name: Setup Node.js
+
+    - name: Set up Node.js
       uses: actions/setup-node@v2
       with:
         node-version: 14
+    
+    - name: Setup JDK
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y openjdk-11-jdk 
+        java -version
+    
+    - name: Setup android sdk
+      env:
+        ANDROID_HOME: /opt/android-sdk
+        ANDROID_SDK_ROOT: /opt/android-sdk
+      run: |
+        mkdir -p ${ANDROID_HOME}
+        wget https://dl.google.com/android/repository/commandlinetools-linux-6609375_latest.zip
+        unzip commandlinetools-linux-6609375_latest.zip -d ${ANDROID_HOME}
+        rm commandlinetools-linux-6609375_latest.zip
+        echo y | ${ANDROID_HOME}/tools/bin/sdkmanager "platform-tools" "build-tools;30.0.2" "platforms;android-30" 
+        echo y | ${ANDROID_HOME}/tools/bin/sdkmanager "platforms;android-29" "platforms;android-28"
+        echo y | ${ANDROID_HOME}/tools/bin/sdkmanager --licenses
+        export PATH=$PATH:$ANDROID_HOME/platform-tools/:$ANDROID_HOME/tools/bin
+    
     - name: Install Appium
       run: npm install -g appium
-    - name: Install Appium Doctor
-      run: npm install -g appium-doctor
+
     - name: Install dependencies
-      run: npm install
-    - name: Start Appium Server
+      run: npm ci
+
+    - name: Start Appium server
       run: appium &
-    - name: Run Appium Tests
-      run: npx wdio wdio.conf.js
+
+    - name: Run tests
+      env:
+        APK_PATH: ${{ secrets.APK_PATH }}
+      run: npm test -- --capabilities.app=$APK_PATH
+
+#     - name: Run Appium Tests
+#       run: npx wdio wdio.conf.js
 
