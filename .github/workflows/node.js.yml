@@ -37,7 +37,6 @@ jobs:
         unzip commandlinetools-linux-6609375_latest.zip -d ${ANDROID_HOME}
         rm commandlinetools-linux-6609375_latest.zip
         echo y | ${ANDROID_HOME}/tools/bin/sdkmanager "platform-tools" "build-tools;30.0.2" "platforms;android-30" 
-        echo y | ${ANDROID_HOME}/tools/bin/sdkmanager "platforms;android-29" "platforms;android-28"
         echo y | ${ANDROID_HOME}/tools/bin/sdkmanager --licenses
         export PATH=$PATH:$ANDROID_HOME/platform-tools/:$ANDROID_HOME/tools/bin
     
@@ -50,11 +49,11 @@ jobs:
     - name: Start Appium server
       run: appium &
 
-    - name: Run tests
-      env:
-        APK_PATH: ${{ secrets.APK_PATH }}
-      run: npm test -- --capabilities.app=$APK_PATH
+#     - name: Run tests
+#       env:
+#         APK_PATH: ${{ secrets.APK_PATH }}
+#       run: npm test -- --capabilities.app=$APK_PATH
 
-#     - name: Run Appium Tests
-#       run: npx wdio wdio.conf.js
+    - name: Run Appium Tests
+      run: npx wdio wdio.conf.js
 
