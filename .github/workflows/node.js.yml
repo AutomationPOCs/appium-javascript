@@ -26,7 +26,7 @@ jobs:
       run: npm ci
 
     - name: Start Appium server
-      run: appium &
+      run: appium --address 127.0.0.1 --port 4723 &
 
     - name: Start BrowserStack Local
       run: ./BrowserStackLocal --key ${{ env.BROWSERSTACK_KEY }} &
