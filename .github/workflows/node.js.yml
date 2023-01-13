@@ -31,10 +31,10 @@ jobs:
     - name: Start BrowserStack Local
       run: ./BrowserStackLocal --key ${{ env.BROWSERSTACK_KEY }} &
 
-#     - name: Run Appium Tests
-#       run: npx wdio wdio.conf.js
-    - name: Run Appium tests
-      env:
-        APK_PATH: ${{ secrets.APK_PATH }}
-      run: npm test -- --capabilities.app=$APK_PATH
+    - name: Run Appium Tests
+      run: npx wdio wdio.conf.js
+#     - name: Run Appium tests
+#       env:
+#         APK_PATH: ${{ secrets.APK_PATH }}
+#       run: npm test -- --capabilities.app=$APK_PATH
 
