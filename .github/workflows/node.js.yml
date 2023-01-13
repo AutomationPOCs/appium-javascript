@@ -9,24 +9,39 @@ on:
     branches: [ "POC_AppiumJS" ]
 
 jobs:
-  appium-android-test:
+  android-tests:
     runs-on: ubuntu-latest
+
     steps:
     - name: Checkout code
       uses: actions/checkout@v2
-    - name: Setup Node.js
-      uses: actions/setup-node@v2
+
+    - name: Set up Node.js
+      uses: actions/setup-node@v1
       with:
         node-version: 14
-    - name: Install Appium
-      run: npm install -g appium
-    - name: Install dependencies
-      run: npm install
-    - name: Start Appium server
-      run: appium --address 127.0.0.1 --port 4723 &
 
-    - name: Run Appium Tests
-      run: npx wdio wdio.conf.js
+    - name: Install dependencies
+      run: npm ci
+
+    - name: Set up Android environment
+      run: |
+        # Download and install Android SDK
+        wget https://dl.google.com/android/repository/sdk-tools-linux-4333796.zip
+        unzip sdk-tools-linux-4333796.zip -d android-sdk
+        export ANDROID_HOME=$PWD/android-sdk
+        export PATH=$PATH:$ANDROID_HOME/tools:$ANDROID_HOME/platform-tools
+
+        # Install necessary platform tools
+        sdkmanager "platform-tools" "platforms;android-28" "build-tools;28.0.3"
+
+    - name: Start Appium Server
+      run: appium &
+
+    - name: Run tests on Android device
+      run: |
+        # Start the test
+        npx wdio wdio.conf.js
 #     - name: Run Appium tests
 #       env:
 #         APK_PATH: ${{ secrets.APK_PATH }}
