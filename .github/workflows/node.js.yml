@@ -11,7 +11,8 @@ on:
 jobs:
   test:
     runs-on: macos-latest
-
+    env:
+      BROWSERSTACK_KEY: ${{ secrets.BROWSERSTACK_KEY }}
     steps:
     - name: Checkout code
       uses: actions/checkout@v2
@@ -27,11 +28,13 @@ jobs:
     - name: Start Appium server
       run: appium &
 
-#     - name: Run tests
-#       env:
-#         APK_PATH: ${{ secrets.APK_PATH }}
-#       run: npm test -- --capabilities.app=$APK_PATH
+    - name: Start BrowserStack Local
+      run: ./BrowserStackLocal --key ${{ env.BROWSERSTACK_KEY }} &
 
-    - name: Run Appium Tests
-      run: npx wdio wdio.conf.js
+#     - name: Run Appium Tests
+#       run: npx wdio wdio.conf.js
+    - name: Run Appium tests
+      env:
+        APK_PATH: ${{ secrets.APK_PATH }}
+      run: npm test -- --capabilities.app=$APK_PATH
 
