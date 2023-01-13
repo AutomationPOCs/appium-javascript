@@ -9,8 +9,8 @@ on:
     branches: [ "POC_AppiumJS" ]
 
 jobs:
-  appium-test:
-    runs-on: ubuntu-latest
+  test:
+    runs-on: macos-latest
 
     steps:
     - name: Checkout code
@@ -20,28 +20,6 @@ jobs:
       uses: actions/setup-node@v2
       with:
         node-version: 14
-    
-    - name: Setup JDK
-      run: |
-        sudo apt-get update
-        sudo apt-get install -y openjdk-11-jdk 
-        java -version
-    
-    - name: Setup android sdk
-      env:
-        ANDROID_HOME: /opt/android-sdk
-        ANDROID_SDK_ROOT: /opt/android-sdk
-      run: |
-        mkdir -p ${ANDROID_HOME}
-        wget https://dl.google.com/android/repository/commandlinetools-linux-6609375_latest.zip
-        unzip commandlinetools-linux-6609375_latest.zip -d ${ANDROID_HOME}
-        rm commandlinetools-linux-6609375_latest.zip
-        echo y | ${ANDROID_HOME}/tools/bin/sdkmanager "platform-tools" "build-tools;30.0.2" "platforms;android-30" 
-        echo y | ${ANDROID_HOME}/tools/bin/sdkmanager --licenses
-        export PATH=$PATH:$ANDROID_HOME/platform-tools/:$ANDROID_HOME/tools/bin
-    
-    - name: Install Appium
-      run: npm install -g appium
 
     - name: Install dependencies
       run: npm ci
