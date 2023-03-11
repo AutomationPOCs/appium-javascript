@@ -7,6 +7,8 @@ on:
     branches: [ "POC_AppiumJS" ]
   pull_request:
     branches: [ "POC_AppiumJS" ]
+  schedule:
+    - cron: '0 3 * * *' # Runs every day at 9 am IST (3:00 am UTC)
 
 jobs:
   android-tests:
